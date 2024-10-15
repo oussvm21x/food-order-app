@@ -10,8 +10,10 @@ const Hero = () => {
         style={{ backgroundImage: `url(${assets.header_img})` }}
       >
         <div className="items-start px-3 fade-in">
-          <h1 className="text-xl font-bold mb-2">Delicious Meals</h1>
-          <h1 className="text-xl font-bold mb-4">Delivered to Your Doorstep</h1>
+          <h1 className="text-5xl font-bold mb-2">Delicious Meals</h1>
+          <h1 className="text-5xl font-bold mb-4">
+            Delivered to Your Doorstep
+          </h1>
           <p className="text-xl max-w-[50vw] mb-8">
             {" "}
             {/* Changed w-[50vw] to max-w-[50vw] */}

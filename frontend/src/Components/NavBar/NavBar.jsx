@@ -7,8 +7,9 @@ import { useState } from "react"; // Import useState
 
 const NavBar = () => {
   const state = useSelector((state) => state); // Get cart item count from Redux
-  const cartItems = state.cart.item;
-  console.log("item card" + cartItems);
+  const cartItems = state.cart.itemCount;
+  console.log("state", state);
+  console.log("item card : ", cartItems);
   const Navigation = () => {
     const [activeLink, setActiveLink] = useState(null); // Track the active link
 
@@ -92,7 +93,7 @@ const NavBar = () => {
           </Link>
 
           {cartItems > 0 && (
-            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex justify-center items-center">
+            <span className="absolute top-[-10px] right-[-16px] bg-red-500 text-white text-xs rounded-full h-5 w-5 flex justify-center items-center">
               {cartItems}
             </span>
           )}

@@ -1,7 +1,12 @@
 import React from "react";
 import "./ExploreMenu.css";
 import { menu_list } from "../../frontend_assets/assets";
-const ExploreMenu = ({ category, setCategory }) => {
+import { useEffect } from "react";
+const ExploreMenu = ({ categorie, setCategorie }) => {
+  useEffect(() => {
+    // This will run whenever 'category' is updated
+    console.log("new category", categorie);
+  }, [categorie]);
   return (
     <>
       <div>
@@ -20,23 +25,22 @@ const ExploreMenu = ({ category, setCategory }) => {
           {menu_list.map((item) => (
             <div
               onClick={() => {
-                setCategory((prev) =>
+                setCategorie((prev) =>
                   prev === item.menu_name ? "All" : item.menu_name
                 );
-                console.log(category);
               }}
               key={item.menu_name}
-              className={`flex-shrink-0 mb-6 ${
-                category === item.menu_name
-                  ? "border-4 border-orange-500 rounded-full"
-                  : ""
-              }`}
+              className={`flex-shrink-0 mb-6 `}
             >
               <div className="text-center">
                 <img
                   src={item.menu_image}
                   alt=""
-                  className="w-32 h-32 rounded-full object-cover cursor-pointer"
+                  className={`w-32 h-32 rounded-full object-cover cursor-pointer ${
+                    categorie === item.menu_name
+                      ? "border-4 border-orange-500 rounded-full"
+                      : ""
+                  } `}
                 />
                 <h1 className="text-xl mt-3 ">{item.menu_name}</h1>
               </div>
