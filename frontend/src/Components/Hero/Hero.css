@@ -1,0 +1,13 @@
+.fade-in {
+    opacity: 0;
+    /* Start fully transparent */
+    animation: fadeIn 2s forwards;
+    /* Fade in effect over 0.5 seconds */
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        /* End fully opaque */
+    }
+}
