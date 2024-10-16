@@ -15,6 +15,7 @@ const MenuDisplay = ({ categorie }) => {
               price={item.price}
               description={item.description}
               category={item.category}
+              id={item._id}
             />
           );
         }

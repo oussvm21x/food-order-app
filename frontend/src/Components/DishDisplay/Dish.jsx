@@ -1,41 +1,52 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../reducers/slicers/cartSlice"; // Import addToCart action
+import { addToCart, removeFromCart } from "../../reducers/slicers/cartSlice"; // Import addToCart action
 import { assets } from "../../frontend_assets/assets";
+import { useDispatch } from "react-redux"; // Import useDispatch hook
+import { useSelector } from "react-redux"; // Import useSelector hook
 
-const dispatch = useDispatch(); // Initialize Redux dispatch
+const Dish = ({ name, image, price, description, category, id }) => {
+  const dispatch = useDispatch(); // Get dispatch function from useDispatch hook
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
-const handleAddToCart = () => {
-  const dish = {
-    id,
-    name,
-    image,
-    price,
-    category,
+  // Find the current quantity of this dish in the cart
+  const itemInCart = cartItems.find((item) => item.id === id);
+  const itemQuantity = itemInCart ? itemInCart.quantity : 0;
+  const handleAddToCart = () => {
+    const dish = {
+      id,
+      name,
+      image,
+      price,
+      category,
+    };
+
+    dispatch(addToCart(dish)); // Dispatch addToCart action with the dish
+  };
+  const handleDeleteFromCart = () => {
+    const dish = {
+      id,
+      name,
+      image,
+      price,
+      category,
+    };
+
+    dispatch(removeFromCart(dish)); // Dispatch addToCart action with the dish
+  };
+  const AddButtons = ({ handleAddToCart }) => {
+    return (
+      <div className="rounded-full bg-slate-100 flex justify-between gap-3 p-1 text-center items-center w-28">
+        <button onClick={handleAddToCart} className="w-8 h-8 rounded-full">
+          <img src={assets.add_icon_green}></img>
+        </button>
+        <p className="text-lg font-semibold">{itemQuantity}</p>
+        <button onClick={handleDeleteFromCart} className="w-8 h-8 rounded-full">
+          <img src={assets.remove_icon_red}></img>
+        </button>
+      </div>
+    );
   };
 
-  dispatch(addToCart(dish)); // Dispatch addToCart action with the dish
-};
-const AddButtons = ({ handleAddToCart }) => {
-  return (
-    <div className="rounded-full bg-slate-100 flex justify-between gap-3 p-1">
-      <button
-        onClick={handleAddToCart}
-        className="bg-green-500 text-white w-8 h-8 rounded-full"
-      >
-        +
-      </button>
-      <p>1</p>
-      <button
-        onClick={handleAddToCart}
-        className="bg-red-500 text-white w-8 h-8 rounded-full"
-      >
-        -
-      </button>
-    </div>
-  );
-};
-const Dish = ({ name, image, price, description, category, id }) => {
   return (
     <div className="border rounded-lg shadow-lg overflow-hidden w-64 bg-white flex flex-col">
       <img src={image} alt={name} className="w-full h-40 object-cover" />

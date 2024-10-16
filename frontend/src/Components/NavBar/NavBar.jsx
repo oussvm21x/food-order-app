@@ -2,14 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { assets } from "../../frontend_assets/assets";
 import { useSelector } from "react-redux"; // Use this hook to access Redux state
-import { NavLink } from "react-router-dom"; // Import NavLink
 import { useState } from "react"; // Import useState
 
 const NavBar = () => {
-  const state = useSelector((state) => state); // Get cart item count from Redux
-  const cartItems = state.cart.itemCount;
-  console.log("state", state);
-  console.log("item card : ", cartItems);
+  // Get cart items count from Redux
+  const itemsCount = useSelector((state) => state.cart.itemsCount);
+
+  console.log("Items in cart:", itemsCount);
+
   const Navigation = () => {
     const [activeLink, setActiveLink] = useState(null); // Track the active link
 
@@ -83,7 +83,7 @@ const NavBar = () => {
           </Link>
         </div>
 
-        <div className="h-6 w-auto items-center relative ">
+        <div className="h-6 w-auto items-center relative">
           <Link>
             <img
               src={assets.basket_icon}
@@ -92,9 +92,9 @@ const NavBar = () => {
             />
           </Link>
 
-          {cartItems > 0 && (
+          {itemsCount > 0 && (
             <span className="absolute top-[-10px] right-[-16px] bg-red-500 text-white text-xs rounded-full h-5 w-5 flex justify-center items-center">
-              {cartItems}
+              {itemsCount}
             </span>
           )}
         </div>
