@@ -5,6 +5,7 @@ import { useSelector } from "react-redux"; // Use this hook to access Redux stat
 import { useState } from "react"; // Import useState
 import { MdFastfood } from "react-icons/md";
 import { MdNoFood } from "react-icons/md";
+import Modal from "../AuthModal/Modal"; // Import Modal component
 import "./NavBar.css";
 
 const NavBar = () => {
@@ -127,10 +128,20 @@ const NavBar = () => {
     setToogle(!toogle);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+
+  const openSignIn = () => {
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
+
   return (
-    <nav>
+    <nav className="pad">
       <div className="hidden lg:block">
-        <div className="flex justify-between items-center overflow-hidden mb-6">
+        <div className="flex justify-between items-center overflow-hidden">
           <div className="w-1/5">
             <img src={assets.logo} alt="Logo" className="w-full h-full" />
           </div>
@@ -147,7 +158,7 @@ const NavBar = () => {
             </div>
 
             <div className="h-6 w-auto items-center relative">
-              <Link>
+              <Link to="/cart">
                 <img
                   src={assets.basket_icon}
                   alt="basket"
@@ -162,14 +173,17 @@ const NavBar = () => {
               )}
             </div>
 
-            <button className="py-2 px-3 text-white font-medium text-lg bg-orange-500 rounded-2xl hover:bg-orange-400  transition duration-300 ease-in-out">
+            <button
+              onClick={openSignIn}
+              className="py-2 px-3 text-white font-medium text-lg bg-orange-500 rounded-2xl hover:bg-orange-400  transition duration-300 ease-in-out"
+            >
               Sign In
             </button>
           </div>
         </div>
       </div>
       <div className="lg:hidden">
-        <div className="flex justify-between items-end mb-6">
+        <div className="flex justify-between items-end ">
           <div className="w-2/5 ">
             <img src={assets.logo} alt="Google Logo" />
           </div>
@@ -207,6 +221,7 @@ const NavBar = () => {
           </div>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal} />
     </nav>
   );
 };

@@ -13,6 +13,11 @@
     /* You can adjust this value as needed */
 }
 
+.mar {
+    @apply lg:my-5 lg:mx-24 lg:m-0 sm:mx-16 sm:mt-4 mx-5 my-2
+    /* You can adjust this value as needed */
+}
+
 * {
     margin: 0;
     padding: 0;
