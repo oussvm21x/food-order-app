@@ -21,49 +21,53 @@ const NavBar = () => {
   const Navigation = () => {
     return (
       <div className="flex justify-between items-center w-2/5 text-lg lg:flex-row ">
-        <button
-          onClick={() => handleLinkClick("home")}
-          className={`${
-            activeLink === "home"
-              ? "underline underline-offset-4"
-              : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
-          }`}
-        >
-          Home
-        </button>
+        <Link to="/" onClick={() => handleLinkClick("home")}>
+          <button
+            className={`${
+              activeLink === "home"
+                ? "underline underline-offset-4"
+                : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
+            }`}
+          >
+            Home
+          </button>
+        </Link>
 
-        <button
-          onClick={() => handleLinkClick("menu")}
-          className={`${
-            activeLink === "menu"
-              ? "underline underline-offset-4"
-              : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
-          }`}
-        >
-          Menu
-        </button>
+        <Link to="/menu" onClick={() => handleLinkClick("menu")}>
+          <button
+            className={`${
+              activeLink === "menu"
+                ? "underline underline-offset-4"
+                : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
+            }`}
+          >
+            Menu
+          </button>
+        </Link>
 
-        <button
-          onClick={() => handleLinkClick("app")}
-          className={`${
-            activeLink === "app"
-              ? "underline underline-offset-4"
-              : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
-          }`}
-        >
-          App
-        </button>
+        <Link to="/app" onClick={() => handleLinkClick("app")}>
+          <button
+            className={`${
+              activeLink === "app"
+                ? "underline underline-offset-4"
+                : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
+            }`}
+          >
+            App
+          </button>
+        </Link>
 
-        <button
-          onClick={() => handleLinkClick("contact")}
-          className={`${
-            activeLink === "contact"
-              ? "underline underline-offset-4"
-              : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
-          }`}
-        >
-          Contact Us
-        </button>
+        <Link to="/contact" onClick={() => handleLinkClick("contact")}>
+          <button
+            className={`${
+              activeLink === "contact"
+                ? "underline underline-offset-4"
+                : "hover:underline underline-offset-4 transition duration-200 ease-in-out"
+            }`}
+          >
+            Contact Us
+          </button>
+        </Link>
       </div>
     );
   };
