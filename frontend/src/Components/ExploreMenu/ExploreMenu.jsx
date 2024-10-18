@@ -12,7 +12,7 @@ const ExploreMenu = ({ categorie, setCategorie }) => {
       <div>
         <div className="mb-6">
           <h1 className="text-3xl font-semibold mb-3">Explore Menu</h1>
-          <p className="">
+          <p className="hidden md:block">
             Discover a world of culinary delights right at your fingertips. From
             gourmet meals crafted by local chefs to quick bites that satisfy
             your cravings, our menu features a diverse selection to suit every
@@ -36,7 +36,7 @@ const ExploreMenu = ({ categorie, setCategorie }) => {
                 <img
                   src={item.menu_image}
                   alt=""
-                  className={`w-32 h-32 rounded-full object-cover cursor-pointer ${
+                  className={`md:w-32 md:h-32 h-24 w-24 rounded-full object-cover cursor-pointer ${
                     categorie === item.menu_name
                       ? "border-4 border-orange-500 rounded-full"
                       : ""

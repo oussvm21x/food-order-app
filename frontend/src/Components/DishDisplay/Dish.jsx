@@ -48,7 +48,7 @@ const Dish = ({ name, image, price, description, category, id }) => {
   };
 
   return (
-    <div className="border rounded-lg shadow-lg overflow-hidden w-64 bg-white flex flex-col">
+    <div className="border rounded-lg shadow-lg overflow-hidden md:w-56 lg:w-64 bg-white flex flex-col w-full ">
       <img src={image} alt={name} className="w-full h-40 object-cover" />
       <div className="p-4 flex flex-col flex-grow">
         <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
@@ -60,7 +60,7 @@ const Dish = ({ name, image, price, description, category, id }) => {
           />
         </div>
         <p className="text-sm text-gray-500">{category}</p>
-        <p className="mt-2 text-gray-700 flex-grow h-20 overflow-hidden">
+        <p className="mt-2 text-gray-700 flex-grow h-20 overflow-hidden hidden md:block">
           {description}
         </p>
         <div className="mt-4 flex justify-between items-center">

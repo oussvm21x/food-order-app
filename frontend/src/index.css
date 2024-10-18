@@ -9,7 +9,7 @@
 }
 
 .pad {
-    padding: 24px 100px;
+    @apply lg:py-5 lg:px-24 lg:m-0 sm:px-16 sm:mt-4 px-5 py-2
     /* You can adjust this value as needed */
 }
 
@@ -24,7 +24,7 @@
 
 body {
     min-height: 100vh;
-    width: 100vw;
+    min-width: 100vw;
     overflow-x: hidden;
 }
 

@@ -6,13 +6,13 @@ const Footer = () => {
   return (
     <>
       <footer className="bg-gray-800 text-white text-center p-5 rounded-lg">
-        <div className="flex justify-between items-start text-left gap-5">
+        <div className="flex sm:flex-row flex-col justify-between items-start text-left gap-5">
           <div className="flex justify-start items-start flex-col gap-5 text-left w-2/4 p-5">
-            <div className="">
-              <img src={assets.logo} alt="logo" />
+            <div className="w-52">
+              <img src={assets.logo} alt="logo" className="h-full w-full" />
             </div>
 
-            <p>
+            <p className="hidden sm:block">
               Welcome to our food order app, where you can explore a variety of
               delicious meals and place your orders with ease. Enjoy a seamless
               and delightful food ordering experience with us!
@@ -57,7 +57,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="w-1/4 p-5">
+          <div className="w-1/4 p-5 hidden sm:block">
             <h2 className="text-lg font-semibold mb-3">Company</h2>
             <ul className="space-y-2">
               <li>
@@ -88,7 +88,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="w-1/4 p-5 flex justify-between flex-col gap-5">
+          <div className="w-1/4 p-5 flex justify-between flex-col gap-5 hidden sm:block">
             <h2 className="text-lg font-semibold mb-3">Contact</h2>
             <p className="text-sm">1234 Street Name, City, Country</p>
             <p className="text-sm">Email: info@company.com</p>
