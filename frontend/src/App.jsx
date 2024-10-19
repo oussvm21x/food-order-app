@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import NavBar from "./Components/NavBar/NavBar";
 import Footer from "./Components/Footer/Footer";
 import Cart from "./Pages/Cart/Cart";
+import Order from "./Pages/Order/Order";
 
 function App() {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<Order />} />
       </Routes>
       <Footer />
     </BrowserRouter>

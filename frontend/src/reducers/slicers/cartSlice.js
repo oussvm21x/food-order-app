@@ -4,6 +4,11 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     cartItems: [], // Array to hold items and their quantities
     itemsCount: 0, // Total number of items in the cart (sum of all quantities)
+    total: 0,
+    delivery: 10,
+    subtotal: 0,
+    discount: 0
+
 };
 
 // Cart slice
@@ -23,6 +28,11 @@ const cartSlice = createSlice({
             }
             // Increase the total number of items in the cart
             state.itemsCount += 1;
+            state.subtotal = state.cartItems.reduce(
+                (acc, item) => acc + item.price * item.quantity,
+                0
+            );
+            state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
         },
 
         // Remove an item or decrease its quantity
@@ -38,6 +48,11 @@ const cartSlice = createSlice({
                 }
                 // Decrease the total number of items in the cart
                 state.itemsCount -= 1;
+                state.subtotal = state.cartItems.reduce(
+                    (acc, item) => acc + item.price * item.quantity,
+                    0
+                );
+                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
             }
         },
 
@@ -46,11 +61,17 @@ const cartSlice = createSlice({
             state.cartItems = []; // Reset cartItems array
             state.itemsCount = 0;  // Reset itemsCount to 0
         },
+
+        // Apply promo code
+        applyPromoCode: (state, action) => {
+            state.discount = action.payload;
+            state.total = state.total - state.total * state.discount;
+        },
     },
 });
 
 // Export actions
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, applyPromoCode } = cartSlice.actions;
 
 // Export the reducer as the default export
 export default cartSlice.reducer;
