@@ -1,15 +1,25 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import connectDB from './controllers/db.js';
+import connectDB from './configs/db.js';
+import foodRoutes from './routes/foodRoute.js';
 
 dotenv.config();
 
 const app = express();
-app.use(cors())
 
 // Connect to MongoDB
 connectDB();
+
+// Middleware
+app.use(cors())
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+
+// Routes
+app.use('/api/food', foodRoutes);
+
+
 
 const PORT = process.env.PORT || 5000;
 
