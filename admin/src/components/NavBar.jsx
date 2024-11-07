@@ -1,10 +1,11 @@
 import React from "react";
 import { assets } from "../assets/assets";
+import "./style.css";
 
 const NavBar = () => {
   return (
     <>
-      <div className="pad">
+      <div className="bg-red-600">
         <div>
           <div>
             <img src={assets.logo} />

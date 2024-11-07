@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Default to localStorage for web
 import cartReducer from './slicers/cartSlice'; // Your existing cart slice
+import expirationMiddleware from './slicers/deletePresist';
 // Import future reducers when you add them (e.g., userReducer from './slicers/userSlice')
 
 const persistConfig = {
@@ -28,7 +29,7 @@ const store = configureStore({
             serializableCheck: {
                 ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
             },
-        }),
+        }).concat(expirationMiddleware),
 });
 
 const persistor = persistStore(store);

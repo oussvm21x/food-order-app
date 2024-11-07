@@ -60,18 +60,25 @@ const cartSlice = createSlice({
         clearCart: (state) => {
             state.cartItems = []; // Reset cartItems array
             state.itemsCount = 0;  // Reset itemsCount to 0
+            state.subtotal = 0;    // Reset subtotal to 0
+            state.delivery = 10;
+            state.total = state.delivery; // Set total to delivery fee only
+
         },
 
         // Apply promo code
         applyPromoCode: (state, action) => {
             state.discount = action.payload;
-            state.total = state.total - state.total * state.discount;
+            state.total = state.subtotal > 0
+                ? state.subtotal * (1 - state.discount) + state.delivery
+                : state.delivery;
         },
+        resetState: () => initialState
     },
 });
 
 // Export actions
-export const { addToCart, removeFromCart, clearCart, applyPromoCode } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, applyPromoCode, resetState } = cartSlice.actions;
 
 // Export the reducer as the default export
 export default cartSlice.reducer;

@@ -4,10 +4,13 @@ import { removeFromCart } from "../../reducers/slicers/cartSlice"; // Assuming y
 import { Link } from "react-router-dom";
 
 const CartItems = () => {
+  const cart = useSelector((state) => state.cart);
   const subtotal = useSelector((state) => state.cart.subtotal);
   const delivery = useSelector((state) => state.cart.delivery);
   console.log("Delivery:", delivery);
   const total = useSelector((state) => state.cart.total);
+  // console.log("total :" + total);
+  console.log("cart : ", cart);
   return (
     <div className="w-3/5">
       <h2 className="font-semibold text-2xl">Cart Total</h2>
