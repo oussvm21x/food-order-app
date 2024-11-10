@@ -2,3 +2,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.mar {
+    margin: 24px 32px;
+    /* You can adjust this value as needed */
+}
+
+.pad {
+    @apply lg:py-5 lg:px-5 lg:m-0 sm:px-16 sm:mt-4 px-5 py-2
+    /* You can adjust this value as needed */
+}
+
+.mar {
+    @apply lg:my-5 lg:mx-24 lg:m-0 sm:mx-16 sm:mt-4 mx-5 my-2
+    /* You can adjust this value as needed */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    background-color: white;
+    color: black;
+}
+
+body {
+    min-height: 100vh;
+    min-width: 100vw;
+    overflow-x: hidden;
+}
+
+.bordered-text {
+    font-size: 50px;
+    color: white;
+    /* Fill color */
+    text-shadow:
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000;
+    /* Stroke effect */
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    /* Internet Explorer and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
