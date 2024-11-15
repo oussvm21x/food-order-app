@@ -1,4 +1,6 @@
 import Food from '../models/foodModel.js';
+import path from 'path';
+import fs from 'fs';
 
 
 export const getFood = async (req, res) => {
@@ -66,6 +68,10 @@ export const deleteFoodItem = async (req, res) => {
         const foodItem = await Food.findById(req.params.id);
         if (!foodItem) {
             return res.status(404).json({ message: 'Food Item not found' });
+        }
+        const imagePath = path.join('uploads', foodItem.imageUrl);
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
         }
         await Food.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Food Item Deleted' });

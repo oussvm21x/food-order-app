@@ -61,8 +61,10 @@ const AddItem = () => {
 
       const data = await response.json();
       console.log(data);
+      alert("Item added successfully!");
     } catch (error) {
       console.error("Error:", error.message);
+      alert("Failed to Item added !");
     }
   };
 
