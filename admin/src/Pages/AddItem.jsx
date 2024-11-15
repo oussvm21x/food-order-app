@@ -50,7 +50,7 @@ const AddItem = () => {
     }
 
     try {
-      const response = await fetch("/api/food", {
+      const response = await fetch("http://localhost:5000/api/food", {
         method: "POST",
         body: formDataToSend, // Don't set Content-Type header manually; FormData will handle it
       });
