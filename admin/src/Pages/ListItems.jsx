@@ -45,7 +45,7 @@ const ListItems = () => {
     }
   };
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p>Error: {error.message}</p>;
   console.log(items);
   return (
     <div className="p-6">

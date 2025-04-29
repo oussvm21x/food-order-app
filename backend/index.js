@@ -6,7 +6,6 @@ import foodRoutes from './routes/foodRoute.js';
 import authRoutes from './routes/authRoute.js';
 
 dotenv.config();
-
 const app = express();
 
 // Connect to MongoDB
