@@ -27,7 +27,8 @@ const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+                ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'RESET_STATE'],
+                ignoredPaths: ['cart.cartItems'],
             },
         }).concat(expirationMiddleware),
 });

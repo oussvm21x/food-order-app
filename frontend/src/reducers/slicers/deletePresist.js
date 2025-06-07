@@ -1,6 +1,10 @@
 import { persistStore } from 'redux-persist';
 
 const expirationMiddleware = (store) => (next) => (action) => {
+    // Skip middleware for RESET_STATE action to prevent infinite loop
+    if (action.type === 'RESET_STATE') {
+        return next(action);
+    }
     const currentTime = Date.now();
     const expirationTime = 24 * 60 * 60 * 1000; // 1 day, for example
     const lastPersistTime = localStorage.getItem('persistTimestamp');

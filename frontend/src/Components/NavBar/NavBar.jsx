@@ -12,7 +12,6 @@ const NavBar = () => {
   // Get cart items count from Redux
   const itemsCount = useSelector((state) => state.cart.itemsCount);
   const [activeLink, setActiveLink] = useState(null); // Track the active link
-
   const handleLinkClick = (link) => {
     setActiveLink(link); // Set the clicked link as active
   };
