@@ -17,6 +17,10 @@ const NavBar = () => {
   };
   console.log("Items in cart:", itemsCount);
 
+  // get user data from redux
+  const { user, isAuthenticated, isLoading, error } = useSelector(
+    (state) => state.user
+  );
   const Navigation = () => {
     return (
       <div className="flex justify-between items-center w-2/5 text-lg lg:flex-row ">
@@ -141,6 +145,10 @@ const NavBar = () => {
     setIsModalOpen(false); // Close the modal
   };
 
+  const handleLogout = () => {
+    // Implement logout functionality
+  };
+
   return (
     <nav className="pad">
       <div className="hidden lg:block">
@@ -176,12 +184,35 @@ const NavBar = () => {
               )}
             </div>
 
-            <button
-              onClick={openSignIn}
-              className="py-2 px-3 text-white font-medium text-lg bg-orange-500 rounded-2xl hover:bg-orange-400  transition duration-300 ease-in-out"
-            >
-              Sign In
-            </button>
+            {isAuthenticated ? (
+              <Link to="/profile">
+                <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center cursor-pointer overflow-hidden hover:bg-orange-600">
+                  {user?.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-white font-semibold">
+                      {user?.name
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 1)}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ) : (
+              <button
+                onClick={openSignIn}
+                className="py-2 px-3 text-white font-medium text-lg bg-orange-500 rounded-2xl hover:bg-orange-400  transition duration-300 ease-in-out"
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </div>

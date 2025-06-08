@@ -1,6 +1,8 @@
 import { persistStore } from 'redux-persist';
 
 const expirationMiddleware = (store) => (next) => (action) => {
+    if (!action) return next(action);
+    if (typeof action.type === 'undefined') return next(action);
     // Skip middleware for RESET_STATE action to prevent infinite loop
     if (action.type === 'RESET_STATE') {
         return next(action);

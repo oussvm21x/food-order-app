@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { register, login } from "../../services/authService";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setUser,
+  setLoading,
+  setError,
+  clearError,
+} from "../../reducers/slicers/userSlice";
 
 const Modal = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
+  const { isLoading, error } = useSelector((state) => state.user);
   const [isSignIn, setIsSignIn] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -10,12 +19,10 @@ const Modal = ({ isOpen, onClose }) => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const handleToggle = () => {
     setIsSignIn(!isSignIn);
-    setError("");
+    dispatch(clearError());
   };
 
   const handleChange = (e) => {
@@ -32,34 +39,44 @@ const Modal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+    dispatch(clearError());
+    dispatch(setLoading(true));
 
     try {
       if (isSignIn) {
         // Login
         const { email, password } = formData;
         const response = await login({ email, password });
-        console.log("Login successful:", response);
+
+        if (!response || !response.user || !response.token) {
+          throw new Error("Invalid response from server");
+        }
+
+        dispatch(setUser({ user: response.user, token: response.token }));
         toast.success("Successfully logged in!");
-        onClose(); // Close modal on successful login
+        onClose();
       } else {
         // Register and then automatically login
         const { username, email, password } = formData;
-        // First register the user
         await register({ name: username, email, password });
-        console.log("Registration successful");
-
-        // Then automatically login with the same credentials
         const loginResponse = await login({ email, password });
-        console.log("Auto login successful:", loginResponse);
+
+        if (!loginResponse || !loginResponse.user || !loginResponse.token) {
+          throw new Error("Invalid response from server");
+        }
+
+        dispatch(
+          setUser({ user: loginResponse.user, token: loginResponse.token })
+        );
         toast.success("Successfully registered and logged in!");
-        onClose(); // Close modal after successful auto login
+        onClose();
       }
     } catch (error) {
-      setError(error.message || "An error occurred");
+      const errorMessage = error.message || "An error occurred";
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
     } finally {
-      setLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -167,28 +184,20 @@ const Modal = ({ isOpen, onClose }) => {
           <button
             type="submit"
             className="bg-orange-500 text-white py-3 w-full rounded-lg font-semibold hover:bg-orange-600 disabled:opacity-50"
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? "Loading..." : isSignIn ? "Sign In" : "Sign Up"}
+            {isLoading ? "Loading..." : isSignIn ? "Sign In" : "Sign Up"}
           </button>
         </form>
         <p className="mt-6 text-center text-gray-600">
           {isSignIn ? "Don't have an account? " : "Already have an account? "}
           <button
             onClick={handleToggle}
-            className="text-orange-500 font-semibold"
-            disabled={loading}
+            className="text-orange-500 hover:text-orange-600 font-semibold"
           >
             {isSignIn ? "Sign Up" : "Sign In"}
           </button>
         </p>
-        <button
-          onClick={onClose}
-          className="mt-6 text-red-500 block mx-auto font-semibold"
-          disabled={loading}
-        >
-          Close
-        </button>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import Cart from "./Pages/Cart/Cart";
 import Order from "./Pages/Order/Order";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/order" element={<Order />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
       <ToastContainer
