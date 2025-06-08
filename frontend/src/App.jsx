@@ -6,6 +6,8 @@ import NavBar from "./Components/NavBar/NavBar";
 import Footer from "./Components/Footer/Footer";
 import Cart from "./Pages/Cart/Cart";
 import Order from "./Pages/Order/Order";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -19,6 +21,18 @@ function App() {
         <Route path="/order" element={<Order />} />
       </Routes>
       <Footer />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </BrowserRouter>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { register, login } from "../../services/authService";
+import { toast } from "react-toastify";
 
 const Modal = ({ isOpen, onClose }) => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -40,6 +41,7 @@ const Modal = ({ isOpen, onClose }) => {
         const { email, password } = formData;
         const response = await login({ email, password });
         console.log("Login successful:", response);
+        toast.success("Successfully logged in!");
         onClose(); // Close modal on successful login
       } else {
         // Register and then automatically login
@@ -51,6 +53,7 @@ const Modal = ({ isOpen, onClose }) => {
         // Then automatically login with the same credentials
         const loginResponse = await login({ email, password });
         console.log("Auto login successful:", loginResponse);
+        toast.success("Successfully registered and logged in!");
         onClose(); // Close modal after successful auto login
       }
     } catch (error) {
