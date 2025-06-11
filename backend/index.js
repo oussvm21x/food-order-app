@@ -4,12 +4,15 @@ import dotenv from 'dotenv';
 import connectDB from './configs/db.js';
 import foodRoutes from './routes/foodRoute.js';
 import authRoutes from './routes/authRoute.js';
+import cookieParser from 'cookie-parser';
+
 
 dotenv.config();
 const app = express();
 
 // Connect to MongoDB
 connectDB();
+// Add this before your routes
 
 // CORS configuration
 const corsOptions = {
@@ -22,6 +25,7 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 
 // Routes

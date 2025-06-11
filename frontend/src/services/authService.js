@@ -47,3 +47,28 @@ export const login = async (userData) => {
         throw error;
     }
 };
+
+export const logout = async () => {
+    const response = await fetch(`${API_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+    });
+    if (!response.ok) {
+        throw new Error('Logout failed');
+    }
+    return await response.json();
+};
+
+export const updateUser = async (formData) => {
+    const response = await fetch(`${API_URL}/auth/update`, {
+        method: 'PUT',
+        credentials: 'include',
+        body: formData,
+    });
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Update failed');
+    }
+    return await response.json();
+};
+

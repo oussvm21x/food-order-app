@@ -1,12 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { assets } from "../../frontend_assets/assets";
-import { useSelector } from "react-redux"; // Use this hook to access Redux state
+import { useSelector, useDispatch } from "react-redux"; // Use this hook to access Redux state
 import { useState } from "react"; // Import useState
 import { MdFastfood } from "react-icons/md";
 import { MdNoFood } from "react-icons/md";
 import Modal from "../AuthModal/Modal"; // Import Modal component
 import "./NavBar.css";
+import { logout as logoutService } from "../../services/authService";
+import { logout as logoutRedux } from "../../reducers/slicers/userSlice";
+import { clearCart } from "../../reducers/slicers/cartSlice";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
   // Get cart items count from Redux
@@ -21,6 +25,8 @@ const NavBar = () => {
   const { user, isAuthenticated, isLoading, error } = useSelector(
     (state) => state.user
   );
+  const dispatch = useDispatch();
+
   const Navigation = () => {
     return (
       <div className="flex justify-between items-center w-2/5 text-lg lg:flex-row ">
@@ -145,8 +151,17 @@ const NavBar = () => {
     setIsModalOpen(false); // Close the modal
   };
 
-  const handleLogout = () => {
-    // Implement logout functionality
+  const handleLogout = async () => {
+    console.log("Logout button clicked");
+    try {
+      await logoutService();
+      dispatch(logoutRedux());
+      dispatch(clearCart());
+      toast.error("Logged out successfully!"); // Red toast for logout
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast.error(err.message || "Logout failed!"); // Display error message
+    }
   };
 
   return (
@@ -185,26 +200,34 @@ const NavBar = () => {
             </div>
 
             {isAuthenticated ? (
-              <Link to="/profile">
-                <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center cursor-pointer overflow-hidden hover:bg-orange-600">
-                  {user?.profilePicture ? (
-                    <img
-                      src={user.profilePicture}
-                      alt={user.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-white font-semibold">
-                      {user?.name
-                        ?.split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                        .slice(0, 1)}
-                    </span>
-                  )}
-                </div>
-              </Link>
+              <div className="flex items-center space-x-4">
+                <Link to="/profile">
+                  <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center cursor-pointer overflow-hidden hover:bg-orange-600">
+                    {user?.profilePicture ? (
+                      <img
+                        src={user.profilePicture}
+                        alt={user.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-white font-semibold">
+                        {user?.name
+                          ?.split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 1)}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="py-2 px-4 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <button
                 onClick={openSignIn}

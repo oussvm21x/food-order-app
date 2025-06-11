@@ -61,4 +61,63 @@ export const loginUser = async (req, res) => {
     }
 }
 
+export const logoutUser = (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        sameSite: 'strict'
+    });
+    res.status(200).json({ message: 'Logged out successfully' });
+}
 
+export const updateUser = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { name, email } = req.body;
+
+        const updateUser = {}
+
+        if (name) updateUser.name = name
+        if (email) updateUser.email = email
+        if (req.file) updateUser.profilePicture = req.file.path;
+
+        if (Object.keys(updateUser).length > 0) {
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                updateUser,
+                { new: true }
+            );
+
+            // Generate new token with updated user data
+            const token = jwt.sign(
+                { id: updatedUser._id, name: updatedUser.name, email: updatedUser.email },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+            // Set the new token in cookie
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV !== 'development',
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                sameSite: 'strict'
+            });
+
+            return res.json({
+                user: {
+                    id: updatedUser._id,
+                    name: updatedUser.name,
+                    email: updatedUser.email,
+                    createdAt: updatedUser.createdAt,
+                    profilePicture: updatedUser.profilePicture
+                },
+                token
+            });
+        }
+
+        return res.json({ message: "No changes provided" });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
