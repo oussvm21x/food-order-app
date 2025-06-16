@@ -25,7 +25,7 @@ const Dish = ({ name, image, price, description, category, id }) => {
   const handleDeleteFromCart = () => {
     const dish = {
       id,
-      name,
+      image,
       image,
       price,
       category,
@@ -49,7 +49,11 @@ const Dish = ({ name, image, price, description, category, id }) => {
 
   return (
     <div className="border rounded-lg shadow-lg overflow-hidden md:w-56 lg:w-64 bg-white flex flex-col w-full ">
-      <img src={image} alt={name} className="w-full h-40 object-cover" />
+      <img
+        src={`http://localhost:5000/${image.replace("\\", "/")}`} // Replace backslashes with forward slashes
+        alt={name}
+        className="w-full h-40 object-cover"
+      />
       <div className="p-4 flex flex-col flex-grow">
         <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
         <div className="my-2 w-24 h-6">

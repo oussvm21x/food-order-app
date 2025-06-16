@@ -5,6 +5,8 @@ const ListItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+
 
   const fetchItems = async () => {
     setLoading(true);
@@ -49,7 +51,10 @@ const ListItems = () => {
   console.log(items);
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Dish Table</h1>
+      <div className="flex justify-between items-center align-middle ">
+        <h1 className="text-2xl font-bold ">Dish Table</h1>
+        <button className="px-6 py-3 m-3 rounded-lg bg-orange-500">Edit</button>
+      </div>
 
       <table className="w-full border-collapse border border-gray-200">
         <thead>
