@@ -26,7 +26,6 @@ const Dish = ({ name, image, price, description, category, id }) => {
     const dish = {
       id,
       image,
-      image,
       price,
       category,
     };

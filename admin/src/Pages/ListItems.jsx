@@ -1,12 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ListItems = () => {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-
 
   const fetchItems = async () => {
     setLoading(true);
@@ -39,7 +40,7 @@ const ListItems = () => {
       }
       const data = await response.json();
       console.log(data);
-      setItems((prev) => prev.filter((item) => item.id !== id));
+      setItems((prev) => prev.filter((item) => item._id !== id));
       alert("Item deleted successfully.");
       fetchItems();
     } catch (error) {
@@ -51,10 +52,7 @@ const ListItems = () => {
   console.log(items);
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center align-middle ">
-        <h1 className="text-2xl font-bold ">Dish Table</h1>
-        <button className="px-6 py-3 m-3 rounded-lg bg-orange-500">Edit</button>
-      </div>
+      <h1 className="text-2xl font-bold mb-4 ">Dish Table</h1>
 
       <table className="w-full border-collapse border border-gray-200">
         <thead>
@@ -68,7 +66,7 @@ const ListItems = () => {
         </thead>
         <tbody>
           {items.map((item) => (
-            <tr key={item.id} className="text-center">
+            <tr key={item._id} className="text-center">
               <td className="border border-gray-300 px-4 py-2">
                 <img
                   src={`http://localhost:5000/${item.imageUrl.replace(
@@ -87,12 +85,21 @@ const ListItems = () => {
                 {item.category}
               </td>
               <td className="border border-gray-300 px-4 py-2">
-                <button
-                  onClick={() => handleDelete(item._id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                >
-                  Delete
-                </button>
+                <div className="flex justify-center space-x-2">
+                  <button
+                    onClick={() => navigate(`/update/${item._id}`)}
+                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
+                  >
+                    Edit
+                  </button>
+                  {console.log("id:" + item._id)}
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

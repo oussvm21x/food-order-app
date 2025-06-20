@@ -16,7 +16,7 @@ router.get('/:id', getFoodItem);// Get a single food item by ID  -- Working
 router.post('/', upload.single('image'), createFoodItem);// Add a new food item -- Working 
 
 // PUT {UPDATE}
-router.patch('/:id', updateFoodItem);// Update a food item by ID -- Working 
+router.patch('/update/:id', updateFoodItem);// Update a food item by ID -- Working 
 
 // DELETE 
 router.delete('/:id', deleteFoodItem);// Delete a food item by ID

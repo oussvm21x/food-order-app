@@ -4,6 +4,7 @@ import AddItem from "./AddItem";
 import ListItems from "./ListItems";
 import Orders from "./Orders";
 import SideBar from "../Components/SideBar";
+import Update from "./Update";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
             <Route path="/" element={<AddItem />} />
             <Route path="/cart" element={<ListItems />} />
             <Route path="/order" element={<Orders />} />
+            <Route path="/update/:id" element={<Update />} />
           </Routes>
         </BrowserRouter>
       </div>
