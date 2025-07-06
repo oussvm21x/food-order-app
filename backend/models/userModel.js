@@ -19,7 +19,19 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    cart: [{
+        foodId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Food',
+            required: true
+        },
+        quantity: {
+            type: mongoose.Schema.Types.Number,
+            required: true,
+            default: 1
+        }
+    }]
 });
 
 const User = mongoose.model('User', userSchema);

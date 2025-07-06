@@ -5,6 +5,7 @@ import connectDB from './configs/db.js';
 import foodRoutes from './routes/foodRoute.js';
 import authRoutes from './routes/authRoute.js';
 import cookieParser from 'cookie-parser';
+import cartRoutes from './routes/cartRoute.js';
 
 
 dotenv.config();
@@ -26,11 +27,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static('uploads'));
 
+
+app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/food', foodRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
 
 const PORT = process.env.PORT || 5000;
 
