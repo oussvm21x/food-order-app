@@ -30,7 +30,8 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.Number,
             required: true,
             default: 1
-        }
+        },
+        _id: false
     }]
 });
 

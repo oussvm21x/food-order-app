@@ -1,9 +1,17 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart } from "../../reducers/slicers/cartSlice"; // Assuming you have an action to remove items
+import { removeFromCart } from "../../reducers/slicers/cartSlice";
+
 const CartTotale = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
+
+  // Subtotal calculation using populated foodId
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + (item.foodId?.price || 0) * item.quantity,
+    0
+  );
+
   return (
     <div className="overflow-x-auto px-2 my-10">
       <table className="min-w-full bg-white border">
@@ -20,13 +28,10 @@ const CartTotale = () => {
         <tbody>
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
-              <tr key={item.foodId} className="border-b">
+              <tr key={item._id} className="border-b">
                 <td className="px-4 py-2">
                   <img
-                    src={`http://localhost:5000/${item.foodId?.imageUrl?.replace(
-                      "\\",
-                      "/"
-                    )}`}
+                    src={item.foodId?.imageUrl || item.foodId?.image}
                     alt={item.foodId?.name || "Food item"}
                     className="w-12 h-12 object-cover"
                   />
@@ -39,7 +44,9 @@ const CartTotale = () => {
                 </td>
                 <td className="px-4 py-2">
                   <button
-                    onClick={() => dispatch(removeFromCart(item.foodId))}
+                    onClick={() =>
+                      dispatch(removeFromCart(item.foodId._id || item.foodId))
+                    }
                     className="text-red-600 font-bold"
                   >
                     x
@@ -56,6 +63,9 @@ const CartTotale = () => {
           )}
         </tbody>
       </table>
+      <div className="mt-4 text-right font-bold text-lg">
+        Subtotal: ${subtotal}
+      </div>
     </div>
   );
 };

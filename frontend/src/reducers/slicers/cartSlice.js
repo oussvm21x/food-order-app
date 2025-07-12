@@ -99,9 +99,10 @@ const cartSlice = createSlice({
                 state.error = null;
                 // Replace cartItems with backend data
                 state.cartItems = action.payload || [];
-                // Recalculate itemsCount and subtotal/total
+                // Recalculate itemsCount
                 state.itemsCount = state.cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
-                state.subtotal = state.cartItems.reduce((acc, item) => acc + (item.foodId?.price * (item.quantity || 1)), 0);
+                // Subtotal is now calculated in the UI, not here
+                state.subtotal = 0;
                 state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
             })
             .addCase(fetchCart.rejected, (state, action) => {
@@ -117,7 +118,7 @@ const cartSlice = createSlice({
                 state.error = null
                 state.cartItems = action.payload || [];
                 state.itemsCount = state.cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0)
-                state.subtotal = state.cartItems.reduce((acc, item) => acc + (item.foodId?.price * (item.quantity || 1)), 0);
+                state.subtotal = 0;
                 state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
             })
             .addCase(addToCart.rejected, (state, action) => {
@@ -134,7 +135,7 @@ const cartSlice = createSlice({
                 state.error = null;
                 state.cartItems = action.payload || [];
                 state.itemsCount = state.cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
-                state.subtotal = state.cartItems.reduce((acc, item) => acc + (item.foodId?.price * (item.quantity || 1)), 0);
+                state.subtotal = 0;
                 state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
             })
             .addCase(removeFromCart.rejected, (state, action) => {
