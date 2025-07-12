@@ -8,7 +8,7 @@ const addToCart = async (req, res) => {
         const cartItem = { foodId, quantity }
         user.cart.push(cartItem)
         await user.save()
-        res.status(201).json({ message: 'Item added to cart successfully' })
+        res.status(201).json({ message: 'Item added to cart successfully', cart: user.cart })
     } catch (error) {
         res.status(500).json({ message: 'Error addig items' })
         console.log(error)
@@ -43,7 +43,7 @@ const removeFromCart = async (req, res) => {
         }
         user.cart = user.cart.filter(item => item.foodId.toString() !== foodId)
         await user.save()
-        res.status(200).json({ message: 'Item removed from cart successfully' })
+        res.status(200).json({ message: 'Item removed from cart successfully', cart: user.cart })
 
     } catch (error) {
         res.status(500).json({ message: 'Error removing item from cart' })

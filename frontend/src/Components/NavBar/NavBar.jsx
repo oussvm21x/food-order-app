@@ -9,7 +9,7 @@ import Modal from "../AuthModal/Modal"; // Import Modal component
 import "./NavBar.css";
 import { logout as logoutService } from "../../services/authService";
 import { logout as logoutRedux } from "../../reducers/slicers/userSlice";
-import { clearCart } from "../../reducers/slicers/cartSlice";
+//import { clearCart } from "../../reducers/slicers/cartSlice";
 import { toast } from "react-toastify";
 
 const NavBar = () => {
@@ -156,7 +156,7 @@ const NavBar = () => {
     try {
       await logoutService();
       dispatch(logoutRedux());
-      dispatch(clearCart());
+      //dispatch(clearCart());
       toast.error("Logged out successfully!"); // Red toast for logout
     } catch (err) {
       console.error("Logout error:", err);

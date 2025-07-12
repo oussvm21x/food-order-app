@@ -11,6 +11,7 @@ const CartItems = () => {
   const total = useSelector((state) => state.cart.total);
   // console.log("total :" + total);
   console.log("cart : ", cart);
+  
   return (
     <div className="w-3/5">
       <h2 className="font-semibold text-2xl">Cart Total</h2>

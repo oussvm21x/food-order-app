@@ -9,28 +9,13 @@ const Dish = ({ name, image, price, description, category, id }) => {
   const cartItems = useSelector((state) => state.cart.cartItems);
 
   // Find the current quantity of this dish in the cart
-  const itemInCart = cartItems.find((item) => item.id === id);
+  const itemInCart = cartItems.find((item) => item.foodId === id);
   const itemQuantity = itemInCart ? itemInCart.quantity : 0;
   const handleAddToCart = () => {
-    const dish = {
-      id,
-      name,
-      image,
-      price,
-      category,
-    };
-
-    dispatch(addToCart(dish)); // Dispatch addToCart action with the dish
+    dispatch(addToCart({ foodId: id, quantity: 1 })); // Correct payload for thunk/backend
   };
   const handleDeleteFromCart = () => {
-    const dish = {
-      id,
-      image,
-      price,
-      category,
-    };
-
-    dispatch(removeFromCart(dish)); // Dispatch addToCart action with the dish
+    dispatch(removeFromCart(id)); // Correct payload for thunk/backend
   };
   const AddButtons = ({ handleAddToCart }) => {
     return (

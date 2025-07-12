@@ -20,21 +20,26 @@ const CartTotale = () => {
         <tbody>
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
-              <tr key={item.id} className="border-b">
+              <tr key={item.foodId} className="border-b">
                 <td className="px-4 py-2">
                   <img
-                    src={item.image} // Assuming you have image URLs in your items
-                    alt={item.title}
+                    src={`http://localhost:5000/${item.foodId?.imageUrl?.replace(
+                      "\\",
+                      "/"
+                    )}`}
+                    alt={item.foodId?.name || "Food item"}
                     className="w-12 h-12 object-cover"
                   />
                 </td>
-                <td className="px-4 py-2">{item.name}</td>
-                <td className="px-4 py-2">${item.price}</td>
+                <td className="px-4 py-2">{item.foodId?.name || "Unknown"}</td>
+                <td className="px-4 py-2">${item.foodId?.price || 0}</td>
                 <td className="px-4 py-2">{item.quantity}</td>
-                <td className="px-4 py-2">${item.price * item.quantity}</td>
+                <td className="px-4 py-2">
+                  ${(item.foodId?.price || 0) * item.quantity}
+                </td>
                 <td className="px-4 py-2">
                   <button
-                    onClick={() => dispatch(removeFromCart(item))}
+                    onClick={() => dispatch(removeFromCart(item.foodId))}
                     className="text-red-600 font-bold"
                   >
                     x
