@@ -9,12 +9,14 @@ import Modal from "../AuthModal/Modal"; // Import Modal component
 import "./NavBar.css";
 import { logout as logoutService } from "../../services/authService";
 import { logout as logoutRedux } from "../../reducers/slicers/userSlice";
-import { clearCart } from "../../reducers/slicers/cartSlice";
+import { resetToGuestMode } from "../../reducers/slicers/cartSlice";
 import { toast } from "react-toastify";
+import useCart from "../../hooks/useCart";
 
 const NavBar = () => {
   // Get cart items count from Redux
-  const itemsCount = useSelector((state) => state.cart.itemsCount);
+  const { cartItems } = useCart();
+  const itemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const [activeLink, setActiveLink] = useState(null); // Track the active link
   const handleLinkClick = (link) => {
     setActiveLink(link); // Set the clicked link as active
@@ -156,7 +158,7 @@ const NavBar = () => {
     try {
       await logoutService();
       dispatch(logoutRedux());
-      dispatch(clearCart());
+      dispatch(resetToGuestMode());
       toast.error("Logged out successfully!"); // Red toast for logout
     } catch (err) {
       console.error("Logout error:", err);

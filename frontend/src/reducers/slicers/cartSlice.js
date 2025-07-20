@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { cartService, isOnline } from '../../services/cartService';
 
 // Initial state
 const initialState = {
@@ -7,78 +8,340 @@ const initialState = {
     total: 0,
     delivery: 10,
     subtotal: 0,
-    discount: 0
-
+    discount: 0,
+    loading: false,
+    error: null,
+    isOnline: true, // Track online status
+    syncInProgress: false // Track if backend sync is in progress
 };
 
-// Cart slice
+// ============= GUEST CART OPERATIONS (LOCAL ONLY) =============
+
+// Local cart operations for guests
+const guestCartOperations = {
+    addToLocal: (state, action) => {
+        const { foodId, quantity = 1, name, price, image, description, category } = action.payload;
+        const existingItem = state.cartItems.find(item => item.foodId === foodId);
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            state.cartItems.push({
+                foodId,
+                quantity,
+                name,
+                price,
+                image,
+                description,
+                category
+            });
+        }
+
+        // Recalculate totals
+        state.itemsCount = state.cartItems.reduce((acc, item) => acc + item.quantity, 0);
+        state.subtotal = state.cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+    },
+
+    removeFromLocal: (state, action) => {
+        const foodId = action.payload;
+        const existingItem = state.cartItems.find(item => item.foodId === foodId);
+
+        if (existingItem) {
+            if (existingItem.quantity > 1) {
+                existingItem.quantity -= 1;
+            } else {
+                state.cartItems = state.cartItems.filter(item => item.foodId !== foodId);
+            }
+        }
+
+        // Recalculate totals
+        state.itemsCount = state.cartItems.reduce((acc, item) => acc + item.quantity, 0);
+        state.subtotal = state.cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+    },
+
+    clearLocal: (state) => {
+        state.cartItems = [];
+        state.itemsCount = 0;
+        state.subtotal = 0;
+        state.total = 0;
+    }
+};
+
+// ============= AUTHENTICATED USER OPERATIONS (BACKEND SYNC) =============
+
+// Fetch cart from backend (for authenticated users)
+export const fetchCartFromBackend = createAsyncThunk(
+    'cart/fetchCartFromBackend',
+    async (_, { rejectWithValue }) => {
+        try {
+            const cart = await cartService.getCart();
+            return cart || [];
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to fetch cart');
+        }
+    }
+);
+
+// Add to cart with backend sync (for authenticated users)
+export const addToCartWithSync = createAsyncThunk(
+    'cart/addToCartWithSync',
+    async ({ foodId, quantity = 1, foodData }, { getState, rejectWithValue }) => {
+        const state = getState();
+
+        try {
+            // First update local state immediately (optimistic update)
+            // This will be handled in the pending case
+
+            // Then sync with backend
+            const updatedCart = await cartService.addToCart(foodId, quantity);
+            return { cart: updatedCart, foodData };
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to add to cart');
+        }
+    }
+);
+
+// Remove from cart with backend sync (for authenticated users)
+export const removeFromCartWithSync = createAsyncThunk(
+    'cart/removeFromCartWithSync',
+    async (foodId, { rejectWithValue }) => {
+        try {
+            const updatedCart = await cartService.removeFromCart(foodId);
+            return { cart: updatedCart, foodId };
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to remove from cart');
+        }
+    }
+);
+
+// Clear cart with backend sync (for authenticated users)
+export const clearCartWithSync = createAsyncThunk(
+    'cart/clearCartWithSync',
+    async (_, { rejectWithValue }) => {
+        try {
+            await cartService.clearCart();
+            return [];
+        } catch (error) {
+            return rejectWithValue(error.message || 'Failed to clear cart');
+        }
+    }
+);
+
+// ============= CART SLICE =============
+
 const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        // Add an item to the cart
-        addToCart: (state, action) => {
-            const existingItem = state.cartItems.find(item => item.id === action.payload.id);
-            if (existingItem) {
-                // If the item exists in the cart, increase its quantity
-                existingItem.quantity += 1;
-            } else {
-                // If it's a new item, add it to the cart with quantity 1
-                state.cartItems.push({ ...action.payload, quantity: 1 });
-            }
-            // Increase the total number of items in the cart
-            state.itemsCount += 1;
-            state.subtotal = state.cartItems.reduce(
-                (acc, item) => acc + item.price * item.quantity,
-                0
-            );
-            state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+        // ===== GUEST OPERATIONS =====
+        addToCartLocal: guestCartOperations.addToLocal,
+        removeFromCartLocal: guestCartOperations.removeFromLocal,
+        clearCartLocal: guestCartOperations.clearLocal,
+
+        // ===== UTILITY ACTIONS =====
+        setOnlineStatus: (state, action) => {
+            state.isOnline = action.payload;
         },
 
-        // Remove an item or decrease its quantity
-        removeFromCart: (state, action) => {
-            const existingItem = state.cartItems.find(item => item.id === action.payload.id);
-            if (existingItem) {
-                if (existingItem.quantity > 1) {
-                    // If the quantity is more than 1, decrease it
-                    existingItem.quantity -= 1;
-                } else {
-                    // If the quantity is 1, remove the item from the cart
-                    state.cartItems = state.cartItems.filter(item => item.id !== action.payload.id);
-                }
-                // Decrease the total number of items in the cart
-                state.itemsCount -= 1;
-                state.subtotal = state.cartItems.reduce(
-                    (acc, item) => acc + item.price * item.quantity,
-                    0
-                );
-                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
-            }
-        },
-
-        // Clear the entire cart
-        clearCart: (state) => {
-            state.cartItems = []; // Reset cartItems array
-            state.itemsCount = 0;  // Reset itemsCount to 0
-            state.subtotal = 0;    // Reset subtotal to 0
-            state.delivery = 10;
-            state.total = state.delivery; // Set total to delivery fee only
-
-        },
-
-        // Apply promo code
         applyPromoCode: (state, action) => {
             state.discount = action.payload;
             state.total = state.subtotal > 0
                 ? state.subtotal * (1 - state.discount) + state.delivery
-                : state.delivery;
+                : 0;
         },
-        resetState: () => initialState
+
+        clearError: (state) => {
+            state.error = null;
+        },
+
+        // Called when user logs out - reset to guest mode
+        resetToGuestMode: (state) => {
+            state.cartItems = [];
+            state.itemsCount = 0;
+            state.subtotal = 0;
+            state.total = 0;
+            state.loading = false;
+            state.error = null;
+            state.syncInProgress = false;
+        },
+
+        // Called when guest logs in - clear local cart before fetching backend cart
+        clearOnLogin: (state) => {
+            state.cartItems = [];
+            state.itemsCount = 0;
+            state.subtotal = 0;
+            state.total = 0;
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            // ===== FETCH CART =====
+            .addCase(fetchCartFromBackend.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchCartFromBackend.fulfilled, (state, action) => {
+                state.loading = false;
+                state.error = null;
+                state.cartItems = action.payload || [];
+
+                // Recalculate totals
+                state.itemsCount = state.cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                state.subtotal = state.cartItems.reduce((acc, item) => {
+                    const foodData = item.foodId; // Populated food data
+                    return acc + ((foodData?.price || 0) * item.quantity);
+                }, 0);
+                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+            })
+            .addCase(fetchCartFromBackend.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || 'Failed to fetch cart';
+            })
+
+            // ===== ADD TO CART WITH SYNC =====
+            .addCase(addToCartWithSync.pending, (state, action) => {
+                state.syncInProgress = true;
+                state.error = null;
+
+                // Optimistic update - add locally first
+                const { foodId, quantity = 1, foodData } = action.meta.arg;
+                const existingItem = state.cartItems.find(item =>
+                    (item.foodId?._id || item.foodId) === foodId
+                );
+
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else if (foodData) {
+                    state.cartItems.push({
+                        foodId: foodData,
+                        quantity,
+                        _id: Date.now() // Temporary ID
+                    });
+                }
+
+                // Recalculate totals
+                state.itemsCount = state.cartItems.reduce((acc, item) => acc + item.quantity, 0);
+                state.subtotal = state.cartItems.reduce((acc, item) => {
+                    const food = item.foodId;
+                    return acc + ((food?.price || 0) * item.quantity);
+                }, 0);
+                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+            })
+            .addCase(addToCartWithSync.fulfilled, (state, action) => {
+                state.syncInProgress = false;
+                state.error = null;
+
+                // Replace with backend response
+                state.cartItems = action.payload.cart || [];
+
+                // Recalculate totals
+                state.itemsCount = state.cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                state.subtotal = state.cartItems.reduce((acc, item) => {
+                    const foodData = item.foodId;
+                    return acc + ((foodData?.price || 0) * item.quantity);
+                }, 0);
+                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+            })
+            .addCase(addToCartWithSync.rejected, (state, action) => {
+                state.syncInProgress = false;
+                state.error = action.payload || 'Failed to add to cart';
+
+                // Rollback optimistic update
+                // In a real app, you might want to keep the failed state and retry
+                // For now, we'll just show the error
+            })
+
+            // ===== REMOVE FROM CART WITH SYNC =====
+            .addCase(removeFromCartWithSync.pending, (state, action) => {
+                state.syncInProgress = true;
+                state.error = null;
+
+                // Optimistic update - remove locally first
+                const foodId = action.meta.arg;
+                const existingItem = state.cartItems.find(item =>
+                    (item.foodId?._id || item.foodId) === foodId
+                );
+
+                if (existingItem) {
+                    if (existingItem.quantity > 1) {
+                        existingItem.quantity -= 1;
+                    } else {
+                        state.cartItems = state.cartItems.filter(item =>
+                            (item.foodId?._id || item.foodId) !== foodId
+                        );
+                    }
+                }
+
+                // Recalculate totals
+                state.itemsCount = state.cartItems.reduce((acc, item) => acc + item.quantity, 0);
+                state.subtotal = state.cartItems.reduce((acc, item) => {
+                    const food = item.foodId;
+                    return acc + ((food?.price || 0) * item.quantity);
+                }, 0);
+                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+            })
+            .addCase(removeFromCartWithSync.fulfilled, (state, action) => {
+                state.syncInProgress = false;
+                state.error = null;
+
+                // Replace with backend response
+                state.cartItems = action.payload.cart || [];
+
+                // Recalculate totals
+                state.itemsCount = state.cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                state.subtotal = state.cartItems.reduce((acc, item) => {
+                    const foodData = item.foodId;
+                    return acc + ((foodData?.price || 0) * item.quantity);
+                }, 0);
+                state.total = state.subtotal > 0 ? state.subtotal + state.delivery : 0;
+            })
+            .addCase(removeFromCartWithSync.rejected, (state, action) => {
+                state.syncInProgress = false;
+                state.error = action.payload || 'Failed to remove from cart';
+            })
+
+            // ===== CLEAR CART WITH SYNC =====
+            .addCase(clearCartWithSync.pending, (state) => {
+                state.syncInProgress = true;
+                state.error = null;
+            })
+            .addCase(clearCartWithSync.fulfilled, (state) => {
+                state.syncInProgress = false;
+                state.error = null;
+                state.cartItems = [];
+                state.itemsCount = 0;
+                state.subtotal = 0;
+                state.total = 0;
+            })
+            .addCase(clearCartWithSync.rejected, (state, action) => {
+                state.syncInProgress = false;
+                state.error = action.payload || 'Failed to clear cart';
+            });
     },
 });
 
 // Export actions
-export const { addToCart, removeFromCart, clearCart, applyPromoCode, resetState } = cartSlice.actions;
+export const {
+    addToCartLocal,
+    removeFromCartLocal,
+    clearCartLocal,
+    setOnlineStatus,
+    applyPromoCode,
+    clearError,
+    resetToGuestMode,
+    clearOnLogin
+} = cartSlice.actions;
 
-// Export the reducer as the default export
+// Export selectors
+export const selectCartItems = (state) => state.cart.cartItems;
+export const selectCartTotal = (state) => state.cart.total;
+export const selectCartSubtotal = (state) => state.cart.subtotal;
+export const selectCartItemsCount = (state) => state.cart.itemsCount;
+export const selectCartLoading = (state) => state.cart.loading;
+export const selectCartError = (state) => state.cart.error;
+export const selectIsOnline = (state) => state.cart.isOnline;
+export const selectSyncInProgress = (state) => state.cart.syncInProgress;
+
 export default cartSlice.reducer;

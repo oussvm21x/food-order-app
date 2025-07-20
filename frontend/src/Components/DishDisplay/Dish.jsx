@@ -1,53 +1,95 @@
 import React from "react";
-import { addToCart, removeFromCart } from "../../reducers/slicers/cartSlice"; // Import addToCart action
 import { assets } from "../../frontend_assets/assets";
-import { useDispatch } from "react-redux"; // Import useDispatch hook
-import { useSelector } from "react-redux"; // Import useSelector hook
+import useCart from "../../hooks/useCart";
 
 const Dish = ({ name, image, price, description, category, id }) => {
-  const dispatch = useDispatch(); // Get dispatch function from useDispatch hook
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const {
+    addToCart,
+    removeFromCart,
+    getItemQuantity,
+    canUseCart,
+    isOnline,
+    isAuthenticated,
+    syncInProgress,
+  } = useCart();
 
-  // Find the current quantity of this dish in the cart
-  const itemInCart = cartItems.find((item) => item.id === id);
-  const itemQuantity = itemInCart ? itemInCart.quantity : 0;
+  const itemQuantity = getItemQuantity(id);
+
   const handleAddToCart = () => {
-    const dish = {
-      id,
+    if (!canUseCart) {
+      if (isAuthenticated && !isOnline) {
+        alert(
+          "Cannot add to cart while offline. Please check your internet connection."
+        );
+      }
+      return;
+    }
+
+    const foodData = {
       name,
-      image,
       price,
+      image,
+      description,
       category,
     };
 
-    dispatch(addToCart(dish)); // Dispatch addToCart action with the dish
+    addToCart(id, foodData, 1);
   };
+
   const handleDeleteFromCart = () => {
-    const dish = {
-      id,
-      image,
-      price,
-      category,
-    };
+    if (!canUseCart) {
+      if (isAuthenticated && !isOnline) {
+        alert(
+          "Cannot remove from cart while offline. Please check your internet connection."
+        );
+      }
+      return;
+    }
 
-    dispatch(removeFromCart(dish)); // Dispatch addToCart action with the dish
+    removeFromCart(id);
   };
+
   const AddButtons = ({ handleAddToCart }) => {
     return (
-      <div className="rounded-full bg-slate-100 flex justify-between gap-3 p-1 text-center items-center w-28">
-        <button onClick={handleAddToCart} className="w-8 h-8 rounded-full">
-          <img src={assets.add_icon_green}></img>
+      <div
+        className={`rounded-full bg-slate-100 flex justify-between gap-3 p-1 text-center items-center w-28 ${
+          !canUseCart ? "opacity-50" : ""
+        }`}
+      >
+        <button
+          onClick={handleAddToCart}
+          className="w-8 h-8 rounded-full"
+          disabled={!canUseCart}
+        >
+          <img src={assets.add_icon_green} alt="Add" />
         </button>
         <p className="text-lg font-semibold">{itemQuantity}</p>
-        <button onClick={handleDeleteFromCart} className="w-8 h-8 rounded-full">
-          <img src={assets.remove_icon_red}></img>
+        <button
+          onClick={handleDeleteFromCart}
+          className="w-8 h-8 rounded-full"
+          disabled={!canUseCart}
+        >
+          <img src={assets.remove_icon_red} alt="Remove" />
         </button>
       </div>
     );
   };
 
   return (
-    <div className="border rounded-lg shadow-lg overflow-hidden md:w-56 lg:w-64 bg-white flex flex-col w-full ">
+    <div className="border rounded-lg shadow-lg overflow-hidden md:w-56 lg:w-64 bg-white flex flex-col w-full relative">
+      {/* Status indicators */}
+      {isAuthenticated && !isOnline && (
+        <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs z-10">
+          Offline
+        </div>
+      )}
+
+      {syncInProgress && (
+        <div className="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs z-10">
+          Syncing...
+        </div>
+      )}
+
       <img
         src={`http://localhost:5000/${image.replace("\\", "/")}`} // Replace backslashes with forward slashes
         alt={name}
@@ -70,6 +112,13 @@ const Dish = ({ name, image, price, description, category, id }) => {
           <span className="text-xl font-semibold text-red-600">${price}</span>
           <AddButtons handleAddToCart={handleAddToCart} />
         </div>
+
+        {/* Cart status indicator */}
+        {!canUseCart && isAuthenticated && !isOnline && (
+          <div className="mt-2 text-xs text-red-500 text-center">
+            Cart disabled - offline
+          </div>
+        )}
       </div>
     </div>
   );
