@@ -148,7 +148,7 @@ const placeOrder = async (req, res) => {
                 }
             ],
             mode: 'payment',
-            success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/order-success?orderId=${savedOrder._id}`,
+            success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/orders`,
             cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/order-cancel?orderId=${savedOrder._id}`,
             metadata: {
                 orderId: savedOrder._id.toString()
@@ -175,6 +175,7 @@ const placeOrder = async (req, res) => {
 
 // Verify payment and update order status
 const verifyPayment = async (req, res) => {
+    console.log('🔍 Starting payment verification...');
     try {
         // Get Stripe instance (lazy initialization)
         const stripeInstance = getStripe();
@@ -200,6 +201,7 @@ const verifyPayment = async (req, res) => {
         const session = await stripeInstance.checkout.sessions.retrieve(sessionId);
 
         if (session.payment_status === 'paid') {
+            console.log(`✅ Payment succeeded for order ${orderId}, session ${sessionId}`);
             // Update order payment status
             const updatedOrder = await orderModel.findByIdAndUpdate(
                 orderId,
@@ -225,6 +227,7 @@ const verifyPayment = async (req, res) => {
                 order: updatedOrder
             });
         } else {
+            console.log(`❌ Payment not completed for order ${orderId}, session ${sessionId}`);
             res.status(400).json({
                 success: false,
                 message: "Payment not completed"

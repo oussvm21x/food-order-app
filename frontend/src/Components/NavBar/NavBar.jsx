@@ -12,6 +12,7 @@ import { logout as logoutRedux } from "../../reducers/slicers/userSlice";
 import { resetToGuestMode } from "../../reducers/slicers/cartSlice";
 import { toast } from "react-toastify";
 import useCart from "../../hooks/useCart";
+import ProfileDropdown from "./ProfileDropdown";
 
 const NavBar = () => {
   // Get cart items count from Redux
@@ -169,7 +170,7 @@ const NavBar = () => {
   return (
     <nav className="pad">
       <div className="hidden lg:block">
-        <div className="flex justify-between items-center overflow-hidden">
+        <div className="flex justify-between items-center overflow-visible">
           <div className="w-1/5">
             <img src={assets.logo} alt="Logo" className="w-full h-full" />
           </div>
@@ -202,34 +203,7 @@ const NavBar = () => {
             </div>
 
             {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <Link to="/profile">
-                  <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center cursor-pointer overflow-hidden hover:bg-orange-600">
-                    {user?.profilePicture ? (
-                      <img
-                        src={user.profilePicture}
-                        alt={user.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-white font-semibold">
-                        {user?.name
-                          ?.split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()
-                          .slice(0, 1)}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="py-2 px-4 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-                >
-                  Logout
-                </button>
-              </div>
+              <ProfileDropdown handleLogout={handleLogout} />
             ) : (
               <button
                 onClick={openSignIn}

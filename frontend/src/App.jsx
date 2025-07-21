@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UserOrdersPage from "./Pages/UserOrdersPage";
 import Home from "./Pages/Home/Home";
 import { useSelector } from "react-redux";
 import NavBar from "./Components/NavBar/NavBar";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/order" element={<Order />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/orders" element={<UserOrdersPage />} />
       </Routes>
       <Footer />
       <ToastContainer

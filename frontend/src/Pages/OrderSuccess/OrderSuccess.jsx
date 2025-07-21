@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { orderService } from "../../services/orderService";
-import { clearCartLocal } from "../../reducers/slicers/cartSlice";
+import { clearCartWithSync } from "../../reducers/slicers/cartSlice";
 
 const OrderSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -29,12 +29,14 @@ const OrderSuccess = () => {
         const response = await orderService.verifyPayment(sessionId, orderId);
 
         if (response.success) {
+          console.log("Payment is valid, clearing cart...");
           setOrderDetails(response.order);
-          // Clear cart after successful payment
-          dispatch(clearCartLocal());
+          // Clear cart after successful payment (frontend and backend)
+          dispatch(clearCartWithSync());
           // Clear pending order ID
           localStorage.removeItem("pendingOrderId");
         } else {
+          console.log("Payment is NOT valid, not clearing cart.");
           setVerificationError(
             response.message || "Payment verification failed"
           );
