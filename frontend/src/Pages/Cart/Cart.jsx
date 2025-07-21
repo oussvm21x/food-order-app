@@ -1,11 +1,13 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import CartTotale from "../../Components/CartTotal/CartTotale";
-import CartItems from "../../Components/CartItems/CartItems";
 import PromoCode from "../../Components/PromoCode/Promo";
 import useCart from "../../hooks/useCart";
 
 const Cart = () => {
   const { cartError, isAuthenticated, isOnline, syncInProgress } = useCart();
+  const cart = useSelector((state) => state.cart);
 
   if (cartError) {
     return (
@@ -52,7 +54,35 @@ const Cart = () => {
 
       <CartTotale />
       <div className="px-2 flex justify-between gap-10">
-        <CartItems />
+        {/* Cart Totals Section */}
+        <div className="w-3/5">
+          <h2 className="font-semibold text-2xl">Cart Total</h2>
+
+          <div className="flex justify-between py-3">
+            <p>Subtotal</p>
+            <p>${cart.subtotal.toFixed(2)}</p>
+          </div>
+          <hr />
+          <div className="flex justify-between py-3">
+            <p>Delivery fees</p>
+            <p>${cart.delivery.toFixed(2)}</p>
+          </div>
+          <hr />
+          <div className="flex justify-between py-3 font-semibold text-lg">
+            <p>Total</p>
+            <p>${cart.total.toFixed(2)}</p>
+          </div>
+
+          <Link to="/order">
+            <button
+              className="w-full rounded-md bg-orange-500 py-3 px-4 text-white font-semibold my-4 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={cart.cartItems.length === 0}
+            >
+              Proceed to Checkout - ${cart.total.toFixed(2)}
+            </button>
+          </Link>
+        </div>
+
         <div className="w-2/5">
           <PromoCode />
         </div>

@@ -1,14 +1,23 @@
+import dotenv from 'dotenv';
+
+// Configure environment variables FIRST, before any other imports
+dotenv.config();
+
+// Debug: Verify environment variables are loaded
+console.log('🔍 Environment check:', {
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ? 'LOADED' : 'MISSING',
+    NODE_ENV: process.env.NODE_ENV || 'development',
+    PORT: process.env.PORT || '5000'
+});
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './configs/db.js';
 import foodRoutes from './routes/foodRoute.js';
 import authRoutes from './routes/authRoute.js';
-import cookieParser from 'cookie-parser';
 import cartRoutes from './routes/cartRoute.js';
-
-
-dotenv.config();
+import orderRoutes from './routes/orderRoute.js';
+import cookieParser from 'cookie-parser';
 const app = express();
 
 // Connect to MongoDB
@@ -34,6 +43,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/food', foodRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/order', orderRoutes);
 
 const PORT = process.env.PORT || 5000;
 
