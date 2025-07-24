@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AddItem from "./AddItem";
 import ListItems from "./ListItems";
 import Orders from "./Orders";
@@ -14,14 +14,12 @@ const Home = () => {
       </div>
 
       <div className="w-4/5 p-6 bg-gray-100 overflow-auto">
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<AddItem />} />
-            <Route path="/cart" element={<ListItems />} />
-            <Route path="/order" element={<Orders />} />
-            <Route path="/update/:id" element={<Update />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<AddItem />} />
+          <Route path="/cart" element={<ListItems />} />
+          <Route path="/order" element={<Orders />} />
+          <Route path="/update/:id" element={<Update />} />
+        </Routes>
       </div>
     </div>
   );
