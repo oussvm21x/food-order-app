@@ -17,6 +17,7 @@ import foodRoutes from './routes/foodRoute.js';
 import authRoutes from './routes/authRoute.js';
 import cartRoutes from './routes/cartRoute.js';
 import orderRoutes from './routes/orderRoute.js';
+import adminRoutes from './routes/adminRoute.js';
 import cookieParser from 'cookie-parser';
 const app = express();
 
@@ -44,6 +45,7 @@ app.use('/api/food', foodRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/order', orderRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 
