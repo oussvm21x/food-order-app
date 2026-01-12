@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api'; // Update with your backend URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const register = async (userData) => {
     try {
