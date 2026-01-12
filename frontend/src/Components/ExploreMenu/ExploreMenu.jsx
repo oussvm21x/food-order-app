@@ -1,5 +1,5 @@
 import React from "react";
-import "./ExploreMenu.css";
+import "./Exploremenu.css";
 import { menu_list } from "../../frontend_assets/assets";
 import { useEffect } from "react";
 const ExploreMenu = ({ categorie, setCategorie }) => {
