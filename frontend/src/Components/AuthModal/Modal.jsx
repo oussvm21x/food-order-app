@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { register, login } from "../../services/authService";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,13 @@ const Modal = ({ isOpen, onClose }) => {
     email: "",
     password: "",
   });
+
+  // Reset loading state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(setLoading(false));
+    }
+  }, [isOpen, dispatch]);
 
   const handleToggle = () => {
     setIsSignIn(!isSignIn);
