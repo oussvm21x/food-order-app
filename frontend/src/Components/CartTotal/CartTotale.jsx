@@ -1,6 +1,10 @@
 import React from "react";
 import useCart from "../../hooks/useCart";
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://food-order-app-backend-hz0d.onrender.com/api";
+
 const CartTotale = () => {
   const { cartItems, removeFromCart, canUseCart } = useCart();
 
@@ -39,7 +43,7 @@ const CartTotale = () => {
                 <tr key={itemId} className="border-b">
                   <td className="px-4 py-2">
                     <img
-                      src={`http://localhost:5000/${itemImage?.replace(
+                      src={`${API_URL.replace("/api", "")}/${itemImage?.replace(
                         "\\",
                         "/"
                       )}`}

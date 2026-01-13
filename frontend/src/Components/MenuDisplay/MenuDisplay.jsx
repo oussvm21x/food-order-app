@@ -2,6 +2,10 @@ import React from "react";
 import Dish from "../DishDisplay/Dish";
 import { useState, useEffect } from "react";
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://food-order-app-backend-hz0d.onrender.com/api";
+
 const MenuDisplay = ({ categorie }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +14,7 @@ const MenuDisplay = ({ categorie }) => {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/food");
+      const response = await fetch(`${API_URL}/food`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }

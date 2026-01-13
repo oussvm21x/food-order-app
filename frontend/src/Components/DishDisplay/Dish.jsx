@@ -2,6 +2,10 @@ import React from "react";
 import { assets } from "../../frontend_assets/assets";
 import useCart from "../../hooks/useCart";
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://food-order-app-backend-hz0d.onrender.com/api";
+
 const Dish = ({ name, image, price, description, category, id }) => {
   const {
     addToCart,
@@ -91,7 +95,7 @@ const Dish = ({ name, image, price, description, category, id }) => {
       )}
 
       <img
-        src={`http://localhost:5000/${image.replace("\\", "/")}`} // Replace backslashes with forward slashes
+        src={`${API_URL.replace("/api", "")}/${image.replace("\\", "/")}`} // Replace backslashes with forward slashes
         alt={name}
         className="w-full h-40 object-cover"
       />
