@@ -18,6 +18,10 @@ export const cartService = {
             });
 
             if (!response.ok) {
+                // Silently handle 401 Unauthorized (not logged in)
+                if (response.status === 401) {
+                    return [];
+                }
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to fetch cart');
             }
