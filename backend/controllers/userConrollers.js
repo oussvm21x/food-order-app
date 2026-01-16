@@ -38,6 +38,12 @@ export const loginUser = async (req, res) => {
         }
         const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
+        console.log('🔐 LOGIN - Setting cookie with:', {
+            NODE_ENV: process.env.NODE_ENV,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        });
+
         res.status(200)
             .cookie('token', token, {
                 httpOnly: true,
