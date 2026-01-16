@@ -56,9 +56,9 @@ export const loginAdmin = async (req, res) => {
         res.status(200)
             .cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV !== 'development',
+                secure: process.env.NODE_ENV === 'production',
                 maxAge: 30 * 24 * 60 * 60 * 1000,
-                sameSite: 'strict'
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
             })
             .json({
                 message: 'Admin logged in successfully',
