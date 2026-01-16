@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, logoutUser, updateUser, getUserById } from '../controllers/userConrollers.js';
+import { registerUser, loginUser, logoutUser, updateUser, getUserById, verifyAuth } from '../controllers/userConrollers.js';
 import hashPassword from '../middleware/hashPassword.js';
 import protect from '../middleware/protect.js';
 import { upload } from '../middleware/multer.js';
@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
 router.post('/register', hashPassword, registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
+router.get('/verify', protect, verifyAuth);
 router.put('/update', protect, upload.single('profilePicture'), updateUser);
 router.get('/:userId', protect, getUserById);
 

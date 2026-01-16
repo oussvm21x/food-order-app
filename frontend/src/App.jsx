@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserOrdersPage from "./Pages/UserOrdersPage";
 import Home from "./Pages/Home/Home";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import NavBar from "./Components/NavBar/NavBar";
 import Footer from "./Components/Footer/Footer";
 import Cart from "./Pages/Cart/Cart";
@@ -10,9 +10,31 @@ import Order from "./Pages/Order/Order";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Profile from "./Pages/Profile/Profile";
+import { useEffect } from "react";
+import { verifyAuth } from "./services/authService";
+import { setUser } from "./reducers/slicers/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authData = await verifyAuth();
+      if (authData && authData.success) {
+        dispatch(
+          setUser({
+            user: authData.user,
+            token: null, // Token is in HTTP-only cookie
+          })
+        );
+      }
+    };
+
+    checkAuth();
+  }, [dispatch]);
+
   console.log("Cart Items:", cartItems);
   return (
     <BrowserRouter>

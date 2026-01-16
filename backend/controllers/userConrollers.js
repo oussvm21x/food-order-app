@@ -147,3 +147,27 @@ export const getUserById = async (req, res) => {
         });
     }
 }
+
+// Verify if user is authenticated (check token from cookie)
+export const verifyAuth = async (req, res) => {
+    try {
+        // req.user is set by the protect middleware
+        const user = req.user;
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                createdAt: user.createdAt,
+                profilePicture: user.profilePicture
+            }
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: 'Not authenticated'
+        });
+    }
+}

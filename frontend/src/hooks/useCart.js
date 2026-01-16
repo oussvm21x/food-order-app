@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     addToCartLocal,
@@ -25,6 +25,8 @@ import { isOnline } from '../services/cartService';
  */
 export const useCart = () => {
     const dispatch = useDispatch();
+    const isInitialMount = useRef(true);
+    const prevAuthState = useRef(false);
 
     // Selectors
     const cartItems = useSelector(selectCartItems);
@@ -54,14 +56,29 @@ export const useCart = () => {
 
     // Handle authentication state changes
     useEffect(() => {
-        if (isAuthenticated && isAppOnline) {
+        // Skip on initial mount to prevent clearing cart during auth check
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            prevAuthState.current = isAuthenticated;
+
+            // If authenticated on mount, fetch cart
+            if (isAuthenticated && isAppOnline) {
+                dispatch(fetchCartFromBackend());
+            }
+            return;
+        }
+
+        // Handle actual auth state changes (login/logout)
+        if (isAuthenticated && !prevAuthState.current && isAppOnline) {
             // User just logged in - clear local cart and fetch from backend
             dispatch(clearOnLogin());
             dispatch(fetchCartFromBackend());
-        } else if (!isAuthenticated) {
+        } else if (!isAuthenticated && prevAuthState.current) {
             // User logged out - reset to guest mode
             dispatch(resetToGuestMode());
         }
+
+        prevAuthState.current = isAuthenticated;
     }, [isAuthenticated, isAppOnline, dispatch]);
 
     // Cart operations

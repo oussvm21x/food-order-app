@@ -72,3 +72,22 @@ export const updateUser = async (formData) => {
     return await response.json();
 };
 
+export const verifyAuth = async () => {
+    try {
+        const response = await fetch(`${API_URL}/auth/verify`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            return null; // Not authenticated
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Verify auth error:', error);
+        return null;
+    }
+};
+
